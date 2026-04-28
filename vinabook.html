@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinabook - Hiệu sách online trực tuyến cho mọi người</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red: #c0392b;
+  --red-dark: #962d22;
+  --red-light: #f8e8e7;
+  --gold: #e67e22;
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --border: #e0e0e0;
+  --bg: #f7f5f2;
+  --white: #fff;
+  --nav-h: 56px;
+}
+
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* ─── TOP BAR ─── */
+.topbar {
+  background: var(--red-dark);
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 0;
+}
+.topbar-inner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.topbar a { color: #ffd; font-weight: 500; }
+.topbar-right { display: flex; gap: 16px; align-items: center; }
+
+/* ─── HEADER ─── */
+header {
+  background: var(--white);
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-inner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 16px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.logo {
+  font-family: 'Merriweather', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--red);
+  white-space: nowrap;
+  letter-spacing: -0.5px;
+}
+.logo span { color: var(--gold); }
+.search-bar {
+  flex: 1;
+  display: flex;
+  max-width: 520px;
+}
+.search-bar input {
+  flex: 1;
+  border: 1.5px solid var(--red);
+  border-right: none;
+  padding: 8px 14px;
+  border-radius: 4px 0 0 4px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+}
+.search-bar button {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  padding: 0 16px;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-size: 15px;
+}
+.header-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-left: auto;
+}
+.btn-login {
+  border: 1.5px solid var(--red);
+  color: var(--red);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background .15s;
+}
+.btn-login:hover { background: var(--red); color: #fff; }
+.cart-btn {
+  position: relative;
+  font-size: 22px;
+  color: var(--red);
+  cursor: pointer;
+}
+.cart-badge {
+  position: absolute;
+  top: -6px; right: -8px;
+  background: var(--gold);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── NAV ─── */
+nav {
+  background: var(--red);
+  position: sticky;
+  top: 64px;
+  z-index: 99;
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 16px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-item {
+  position: relative;
+  flex-shrink: 0;
+}
+.nav-item > a {
+  display: block;
+  color: #fff;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background .15s;
+}
+.nav-item:hover > a { background: rgba(0,0,0,.18); }
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--white);
+  border: 1px solid var(--border);
+  min-width: 200px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  display: none;
+  z-index: 200;
+}
+.nav-item:hover .dropdown { display: block; }
+.dropdown a {
+  display: block;
+  padding: 8px 16px;
+  font-size: 12.5px;
+  color: var(--text);
+  border-bottom: 1px solid #f0f0f0;
+  transition: background .1s;
+}
+.dropdown a:hover { background: var(--red-light); color: var(--red); }
+
+/* ─── MAIN LAYOUT ─── */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* ─── HERO SLIDER ─── */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.slider {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 340px;
+  background: #f0ece6;
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .6s;
+  display: flex;
+  align-items: stretch;
+}
+.slide.active { opacity: 1; }
+.slide-img {
+  flex: 1;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+.slide-content {
+  flex: 0 0 42%;
+  background: linear-gradient(135deg, #3a0a06, #6b1d16);
+  color: #fff;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.slide-badge {
+  background: var(--gold);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 12px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.slide-title {
+  font-family: 'Merriweather', serif;
+  font-size: 18px;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.slide-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+.slide-btn {
+  display: inline-block;
+  background: #fff;
+  color: var(--red);
+  padding: 8px 18px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 12px;
+  width: fit-content;
+  transition: transform .15s;
+}
+.slide-btn:hover { transform: translateY(-1px); }
+.slider-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+}
+.dot {
+  width: 7px; height: 7px;
+  background: rgba(255,255,255,.5);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background .2s;
+}
+.dot.active { background: #fff; }
+
+/* ─── SIDEBAR BANNER ─── */
+.sidebar-banners {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.banner-card {
+  border-radius: 6px;
+  overflow: hidden;
+  height: 164px;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  cursor: pointer;
+}
+.banner-card.red { background: linear-gradient(135deg, #c0392b, #922b21); }
+.banner-card.orange { background: linear-gradient(135deg, #d35400, #b7500a); }
+.banner-text {
+  padding: 16px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 1;
+}
+.banner-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: .8;
+  margin-bottom: 6px;
+}
+.banner-title {
+  font-family: 'Merriweather', serif;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.banner-link {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,.85);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.banner-book-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 64px;
+  opacity: .15;
+}
+
+/* ─── SECTION ─── */
+.section { margin-bottom: 28px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--red);
+}
+.section-title {
+  font-family: 'Merriweather', serif;
+  font-size: 17px;
+  color: var(--red);
+  font-weight: 700;
+}
+.section-more {
+  font-size: 12px;
+  color: var(--red);
+  font-weight: 600;
+  border: 1px solid var(--red);
+  padding: 4px 12px;
+  border-radius: 20px;
+  transition: all .15s;
+}
+.section-more:hover { background: var(--red); color: #fff; }
+
+/* ─── TABS ─── */
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 14px;
+  border-bottom: 2px solid var(--border);
+}
+.tab {
+  padding: 8px 18px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all .15s;
+}
+.tab.active { color: var(--red); border-bottom-color: var(--red); }
+.tab-content { display: none; }
+.tab-content.active { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+
+/* ─── PRODUCT CARD ─── */
+.product-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: box-shadow .2s, transform .15s;
+  cursor: pointer;
+}
+.product-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  transform: translateY(-2px);
+}
+.product-img-wrap {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: #f5f0eb;
+  position: relative;
+}
+.product-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s;
+}
+.product-card:hover .product-img-wrap img { transform: scale(1.04); }
+.product-badge {
+  position: absolute;
+  top: 8px; left: 8px;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.product-badge.new { background: #27ae60; }
+.product-badge.sale { background: var(--gold); }
+.out-badge {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+}
+.product-info {
+  padding: 10px 10px 12px;
+}
+.product-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 36px;
+}
+.product-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--red);
+}
+.product-price-old {
+  font-size: 11px;
+  color: #aaa;
+  text-decoration: line-through;
+  margin-left: 5px;
+}
+.add-cart-btn {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  padding: 7px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s;
+}
+.add-cart-btn:hover { background: var(--red-dark); }
+.add-cart-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+/* ─── CATEGORIES GRID ─── */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+.cat-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+}
+.cat-card:hover {
+  border-color: var(--red);
+  background: var(--red-light);
+}
+.cat-icon { font-size: 28px; margin-bottom: 8px; }
+.cat-name { font-size: 11.5px; font-weight: 600; color: var(--text); }
+
+/* ─── PROMO BANNER ─── */
+.promo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.promo-item {
+  border-radius: 6px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  gap: 14px;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.promo-item:hover { transform: translateY(-2px); }
+.promo-item.p1 { background: linear-gradient(120deg, #e74c3c, #c0392b); color: #fff; }
+.promo-item.p2 { background: linear-gradient(120deg, #e67e22, #ca6f1e); color: #fff; }
+.promo-item.p3 { background: linear-gradient(120deg, #2980b9, #1a6fa0); color: #fff; }
+.promo-ico { font-size: 36px; }
+.promo-text h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.promo-text p { font-size: 11.5px; opacity: .9; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: #2c1a18;
+  color: #ccc;
+  padding: 36px 0 20px;
+  margin-top: 40px;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 32px;
+}
+footer h4 {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+footer p, footer li { font-size: 12px; line-height: 1.9; color: #bbb; }
+footer ul { list-style: none; }
+footer ul li a { color: #bbb; transition: color .15s; }
+footer ul li a:hover { color: #fff; }
+.footer-logo {
+  font-family: 'Merriweather', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.footer-logo span { color: var(--gold); }
+.footer-bottom {
+  max-width: 1200px;
+  margin: 20px auto 0;
+  padding: 16px 16px 0;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-size: 11.5px;
+  color: #888;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #27ae60;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  z-index: 9999;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all .3s;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div>📞 <a href="tel:02873008182">028.73008182</a> &nbsp;|&nbsp; ✉️ <a href="mailto:hotro@vinabook.com">hotro@vinabook.com</a></div>
+    <div class="topbar-right">
+      <span>🏠 332 Lũy Bán Bích, Tân Phú, TP.HCM</span>
+      <a href="#">Đăng nhập</a>
+      <a href="#">Đăng ký</a>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">Vina<span>book</span></div>
+    <div class="search-bar">
+      <input type="text" placeholder="Tìm tên sách, tác giả, thể loại...">
+      <button>🔍</button>
+    </div>
+    <div class="header-actions">
+      <a href="#" class="btn-login">Đăng nhập</a>
+      <div class="cart-btn">
+        🛒
+        <span class="cart-badge" id="cartBadge">0</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-item">
+      <a href="#">📚 Sách Kinh Tế</a>
+      <div class="dropdown">
+        <a href="#">Marketing - Bán Hàng</a>
+        <a href="#">Quản Trị - Lãnh Đạo</a>
+        <a href="#">Tài Chính & Tiền Tệ</a>
+        <a href="#">Khởi Nghiệp / Kỹ Năng</a>
+        <a href="#">Nhân Sự & Việc Làm</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a href="#">📖 Văn Học Trong Nước</a>
+      <div class="dropdown">
+        <a href="#">Tiểu Thuyết</a>
+        <a href="#">Truyện Ngắn - Tản Văn</a>
+        <a href="#">Thơ Ca</a>
+        <a href="#">Truyện Trinh Thám</a>
+        <a href="#">Tự Truyện - Hồi Ký</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a href="#">🌏 Văn Học Nước Ngoài</a>
+      <div class="dropdown">
+        <a href="#">Tiểu Thuyết</a>
+        <a href="#">Truyện Kiếm Hiệp</a>
+        <a href="#">Tiểu Thuyết Ngôn Tình</a>
+        <a href="#">Viễn Tưởng - Kinh Dị</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a href="#">👶 Sách Thiếu Nhi</a>
+      <div class="dropdown">
+        <a href="#">Truyện Tranh</a>
+        <a href="#">Khoa Học Tự Nhiên</a>
+        <a href="#">Mỹ Thuật, Âm Nhạc</a>
+        <a href="#">Sách Ngoại Ngữ</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a href="#">🌱 Phát Triển Bản Thân</a>
+      <div class="dropdown">
+        <a href="#">Tâm Lý - Kỹ Năng Sống</a>
+        <a href="#">Danh Nhân</a>
+        <a href="#">Sách Học Làm Người</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a href="#">💻 Tin Học - Ngoại Ngữ</a>
+      <div class="dropdown">
+        <a href="#">Sách Ngoại Ngữ</a>
+        <a href="#">Từ Điển</a>
+        <a href="#">Tin Học</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a href="#">🎓 Giáo Khoa - Giáo Trình</a>
+      <div class="dropdown">
+        <a href="#">Cấp 1</a>
+        <a href="#">Cấp 2</a>
+        <a href="#">Cấp 3</a>
+        <a href="#">Đại Học</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a href="#" style="color:#ffd54f;font-weight:700;">🔥 Sách Mới 2025</a>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="slider">
+      <div class="slide active">
+        <div class="slide-content">
+          <span class="slide-badge">Sách nổi bật</span>
+          <div class="slide-title">Lưng Tay Nơi Gió<br>Thổi Qua</div>
+          <div class="slide-price">129.000₫</div>
+          <a href="#" class="slide-btn">Mua ngay →</a>
+        </div>
+        <div style="flex:1;background:linear-gradient(160deg,#7b1a14,#3d0d0a);display:flex;align-items:center;justify-content:center;font-size:80px;">📗</div>
+      </div>
+      <div class="slide">
+        <div class="slide-content">
+          <span class="slide-badge">Sách mới nhất</span>
+          <div class="slide-title">Ứng Dụng AI Vào<br>Doanh Nghiệp</div>
+          <div class="slide-price">189.000₫</div>
+          <a href="#" class="slide-btn">Mua ngay →</a>
+        </div>
+        <div style="flex:1;background:linear-gradient(160deg,#0d3b6e,#1a2a4a);display:flex;align-items:center;justify-content:center;font-size:80px;">📘</div>
+      </div>
+      <div class="slide">
+        <div class="slide-content">
+          <span class="slide-badge">Khuyến mãi</span>
+          <div class="slide-title">Ngăn Ngừa Lão Hóa<br>Não Bộ Từ Tuổi 40</div>
+          <div class="slide-price">155.000₫</div>
+          <a href="#" class="slide-btn">Mua ngay →</a>
+        </div>
+        <div style="flex:1;background:linear-gradient(160deg,#145a32,#0b3d22);display:flex;align-items:center;justify-content:center;font-size:80px;">📙</div>
+      </div>
+      <div class="slider-dots" id="dots"></div>
+    </div>
+
+    <div class="sidebar-banners">
+      <div class="banner-card red">
+        <div class="banner-text">
+          <div class="banner-label">Khuyến mãi đặc biệt</div>
+          <div class="banner-title">Giảm đến 40%<br>Sách Kinh Tế</div>
+          <a href="#" class="banner-link">Xem ngay →</a>
+        </div>
+        <div class="banner-book-icon">📚</div>
+      </div>
+      <div class="banner-card orange">
+        <div class="banner-text">
+          <div class="banner-label">Sách mới ra mắt</div>
+          <div class="banner-title">Sách Mới<br>Tháng 4/2025</div>
+          <a href="#" class="banner-link">Khám phá →</a>
+        </div>
+        <div class="banner-book-icon">✨</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROMO ICONS -->
+  <div class="promo-grid">
+    <div class="promo-item p1">
+      <div class="promo-ico">🚚</div>
+      <div class="promo-text">
+        <h4>Miễn phí vận chuyển</h4>
+        <p>Đơn hàng từ 150.000₫</p>
+      </div>
+    </div>
+    <div class="promo-item p2">
+      <div class="promo-ico">🔄</div>
+      <div class="promo-text">
+        <h4>Đổi trả dễ dàng</h4>
+        <p>Trong vòng 7 ngày</p>
+      </div>
+    </div>
+    <div class="promo-item p3">
+      <div class="promo-ico">🎁</div>
+      <div class="promo-text">
+        <h4>Quà tặng hấp dẫn</h4>
+        <p>Khi mua combo sách</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">📂 Danh Mục Sách</div>
+      <a href="#" class="section-more">Xem tất cả</a>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card"><div class="cat-icon">💼</div><div class="cat-name">Kinh Tế</div></div>
+      <div class="cat-card"><div class="cat-icon">📖</div><div class="cat-name">Văn Học VN</div></div>
+      <div class="cat-card"><div class="cat-icon">🌍</div><div class="cat-name">Văn Học NN</div></div>
+      <div class="cat-card"><div class="cat-icon">🧒</div><div class="cat-name">Thiếu Nhi</div></div>
+      <div class="cat-card"><div class="cat-icon">🌱</div><div class="cat-name">Phát Triển</div></div>
+      <div class="cat-card"><div class="cat-icon">🎓</div><div class="cat-name">Giáo Khoa</div></div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS TABS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">📚 Sách Nổi Bật</div>
+      <a href="#" class="section-more">Xem tất cả</a>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('new',this)">Sách Mới Nổi Bật</div>
+      <div class="tab" onclick="switchTab('sale',this)">Sách Khuyến Mãi</div>
+      <div class="tab" onclick="switchTab('best',this)">Bán Chạy Nhất</div>
+    </div>
+    <div class="tab-content active" id="tab-new"></div>
+    <div class="tab-content" id="tab-sale"></div>
+    <div class="tab-content" id="tab-best"></div>
+  </div>
+
+  <!-- KIDS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">🧒 Sách Thiếu Nhi</div>
+      <a href="#" class="section-more">Xem tất cả</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;" id="kids-grid"></div>
+  </div>
+
+  <!-- SELF-DEV -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">🌱 Phát Triển Bản Thân</div>
+      <a href="#" class="section-more">Xem tất cả</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;" id="dev-grid"></div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">Vina<span>book</span></div>
+      <p>Hiệu sách online trực tuyến cho mọi người. Hàng trăm nghìn đầu sách đang chờ bạn khám phá.</p>
+      <br>
+      <p>📞 028.73008182</p>
+      <p>✉️ hotro@vinabook.com</p>
+      <p>🏠 332 Lũy Bán Bích, Tân Phú, TP.HCM</p>
+    </div>
+    <div>
+      <h4>Thông tin</h4>
+      <ul>
+        <li><a href="#">Giới thiệu</a></li>
+        <li><a href="#">Tin tức</a></li>
+        <li><a href="#">Review Sách</a></li>
+        <li><a href="#">Liên hệ</a></li>
+        <li><a href="#">Tuyển dụng</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Hỗ trợ</h4>
+      <ul>
+        <li><a href="#">Hướng dẫn mua hàng</a></li>
+        <li><a href="#">Chính sách đổi trả</a></li>
+        <li><a href="#">Phương thức thanh toán</a></li>
+        <li><a href="#">Vận chuyển</a></li>
+        <li><a href="#">Câu hỏi thường gặp</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Danh mục nổi bật</h4>
+      <ul>
+        <li><a href="#">Sách Kinh Tế</a></li>
+        <li><a href="#">Văn Học Trong Nước</a></li>
+        <li><a href="#">Sách Thiếu Nhi</a></li>
+        <li><a href="#">Phát Triển Bản Thân</a></li>
+        <li><a href="#">Sách Mới 2025</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Vinabook. All rights reserved.</span>
+    <span>Thiết kế bởi Vinabook Team</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast">✓ Đã thêm vào giỏ hàng!</div>
+
+<script>
+// ─── DATA ───
+const booksNew = [
+  { title: 'Edogawa Ranpo Tuyển Tập - Những Câu Chuyện Bí Ẩn Và Ly Kỳ Nhất', price: '119.000₫', icon: '🔍', badge: 'Mới', out: false },
+  { title: 'Bậc Thầy Quản Lý Thời Gian', price: '139.000₫', icon: '⏰', badge: 'Mới', out: false },
+  { title: 'Vườn Thơm Mùi Nắng, Vẽ Sớm Bình Yên', price: '89.000₫', icon: '🌸', badge: '', out: false },
+  { title: 'Vị Hôn Thê Giản Dị Của Tôi Rất Dễ Thương Lúc Ở Nhà - Tập 1', price: '139.000₫', icon: '💕', badge: 'Mới', out: false },
+  { title: 'Sức Mạnh Của Kỷ Luật Bản Thân', price: '126.000₫', icon: '💪', badge: '', out: true },
+];
+const booksSale = [
+  { title: 'Succeed In TOEIC - 10 Practice Tests', price: '358.000₫', oldPrice: '420.000₫', icon: '🇺🇸', badge: '-15%', out: false },
+  { title: 'New Way Ahead - Listening And Speaking Course', price: '320.000₫', oldPrice: '380.000₫', icon: '🎧', badge: '-16%', out: true },
+  { title: 'Ứng Dụng AI Vào Doanh Nghiệp', price: '189.000₫', oldPrice: '220.000₫', icon: '🤖', badge: '-14%', out: false },
+  { title: 'Làm Một Quý Cô Điềm Tĩnh', price: '99.000₫', oldPrice: '130.000₫', icon: '👩', badge: '-24%', out: false },
+  { title: 'Sự Dung Dị Của Ngôn Từ', price: '109.000₫', oldPrice: '140.000₫', icon: '📝', badge: '-22%', out: false },
+];
+const booksBest = [
+  { title: 'Ngăn Ngừa Lão Hóa Não Bộ Từ Tuổi 40', price: '155.000₫', icon: '🧠', badge: 'Hot', out: false },
+  { title: 'Đắc Nhân Tâm', price: '68.000₫', icon: '🤝', badge: 'Bán chạy', out: false },
+  { title: 'Nhà Giả Kim', price: '79.000₫', icon: '⭐', badge: 'Bán chạy', out: false },
+  { title: 'Lưng Tay Nơi Gió Thổi Qua', price: '129.000₫', icon: '🍃', badge: '', out: false },
+  { title: 'An Mạng Trên Bến Thuyền', price: '119.000₫', icon: '⚓', badge: '', out: false },
+];
+const kidsBooks = [
+  { title: 'Sticker Nhiệm Màu - Công Chúa Misa Và Giấc Mơ Kỳ Diệu', price: '55.000₫', icon: '👑', badge: 'Mới', out: false },
+  { title: 'Sổ Tô Màu - Vui Tết Rộn Ràng', price: '75.000₫', icon: '🎨', badge: '', out: true },
+  { title: 'Khám Phá Vũ Trụ Cùng Bé', price: '85.000₫', icon: '🚀', badge: 'Mới', out: false },
+  { title: 'Truyện Cổ Tích Thế Giới Chọn Lọc', price: '65.000₫', icon: '🧚', badge: '', out: false },
+  { title: 'Bé Học Toán Vui - Lớp 1', price: '45.000₫', icon: '🔢', badge: '', out: false },
+];
+const devBooks = [
+  { title: 'Sức Mạnh Của Kỷ Luật Bản Thân', price: '126.000₫', icon: '💪', badge: '', out: false },
+  { title: 'Bậc Thầy Quản Lý Thời Gian', price: '139.000₫', icon: '⏰', badge: 'Mới', out: false },
+  { title: 'Tư Duy Nhanh Và Chậm', price: '149.000₫', icon: '🧩', badge: '', out: false },
+  { title: 'Thói Quen Nguyên Tử', price: '130.000₫', icon: '⚛️', badge: 'Hot', out: false },
+  { title: 'Đừng Bao Giờ Đi Ăn Một Mình', price: '115.000₫', icon: '🍽️', badge: '', out: false },
+];
+
+// ─── CARD RENDER ───
+let cartCount = 0;
+function makeCard(b) {
+  const badge = b.badge ? `<div class="product-badge ${b.badge==='-15%'||b.badge.startsWith('-')?'sale':b.badge==='Mới'?'new':''}">${b.badge}</div>` : '';
+  const outHtml = b.out ? `<div class="out-badge">Hết Hàng</div>` : '';
+  const oldPrice = b.oldPrice ? `<span class="product-price-old">${b.oldPrice}</span>` : '';
+  return `<div class="product-card">
+    <div class="product-img-wrap">
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(135deg,#f5ede6,#ede0d4);">${b.icon}</div>
+      ${badge}${outHtml}
+    </div>
+    <div class="product-info">
+      <div class="product-name">${b.title}</div>
+      <div><span class="product-price">${b.price}</span>${oldPrice}</div>
+      <button class="add-cart-btn" ${b.out?'disabled':''} onclick="addCart(this)">${b.out?'Hết hàng':'🛒 Thêm vào giỏ'}</button>
+    </div>
+  </div>`;
+}
+
+function renderGrid(id, books) {
+  document.getElementById(id).innerHTML = books.map(makeCard).join('');
+}
+
+// ─── TABS ───
+const tabData = { new: booksNew, sale: booksSale, best: booksBest };
+function switchTab(key, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+key).classList.add('active');
+}
+renderGrid('tab-new', booksNew);
+renderGrid('tab-sale', booksSale);
+renderGrid('tab-best', booksBest);
+renderGrid('kids-grid', kidsBooks);
+renderGrid('dev-grid', devBooks);
+
+// ─── CART ───
+function addCart(btn) {
+  cartCount++;
+  document.getElementById('cartBadge').textContent = cartCount;
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+// ─── SLIDER ───
+const slides = document.querySelectorAll('.slide');
+const dotsWrap = document.getElementById('dots');
+let curr = 0;
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===0?' active':'');
+  d.onclick = () => goSlide(i);
+  dotsWrap.appendChild(d);
+});
+function goSlide(n) {
+  slides[curr].classList.remove('active');
+  document.querySelectorAll('.dot')[curr].classList.remove('active');
+  curr = n;
+  slides[curr].classList.add('active');
+  document.querySelectorAll('.dot')[curr].classList.add('active');
+}
+setInterval(() => goSlide((curr+1) % slides.length), 4000);
+</script>
+</body>
+</html>
